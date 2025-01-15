@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&display=swap" rel="stylesheet"> 
+    
+    <title>Skrzydła 3D</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            transition: 0.5s;
+        }
+        .wrapper {
+            top: 90px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px; /* Dodatkowy padding dla lepszego wyglądu */
+            background-color: #f5f5f5; /* Kolor tła */
+        }
+        .wrapper2 {
+            top: 500px;
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px; /* Dodatkowy padding dla lepszego wyglądu */
+        }
+        #container {
+            position: relative;
+            width: 957px; /* dostosuj według potrzeb */
+            height: 309px; /* dostosuj według potrzeb */
+            overflow: hidden; /* Ukryj nadmiarowy content */
+            margin-bottom: 40px;
+        }
+        .layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .color-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 1; /* Pełne krycie */
+            mix-blend-mode: multiply; /* Tryb mieszania multiply */
+            transition: 0.2s;
+        }
+        .pattern-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0px;
+            height: 0px;
+        }
+        
+        .color-button {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 0.2px dotted gray;
+            display: inline-block;
+            margin: 4px;
+            cursor: pointer;      
+    transition: transform 0.2s;
+}
+
+.color-button:hover {
+    transform: scale(1.1); /* Powiększenie o 10% */
+}
+        
+        /* Styl dla lupy */
+        .magnifier {
+            position: fixed;
+            pointer-events: none; /* Lupa nie przeszkadza w interakcji z elementami strony */
+            border: 2px solid #000;
+            border-radius: 50%;
+            overflow: hidden;
+            width: 80px; /* rozmiar lupy */
+            height: 80px; /* rozmiar lupy */
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            z-index: 10; /* upewnij się, że lupa jest na wierzchu */
+            
+        }
+        
+        .magnified-content {
+            position: absolute;
+            top: 68px;
+            overflow: hidden;
+            width: 957px; /* dostosuj według potrzeb */
+            height: 309px; /* dostosuj według potrzeb */
+            left: 136px;
+            background-color: #f5f5f5;
+        }
+        
+        .magnifier .magnified-content {
+            overflow: visible; /* Widoczne tylko dla magnified-content */
+        }
+        
+        .bText {
+            font-family: Poppins, sans-serif;
+            font-weight: 300;
+            font-size: 16px;
+            padding: 10px;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 600px;
+            background-color: white;
+        }
+        
+        /* Styl dla komórek tabeli */
+        th {
+            padding: 10px;
+            text-align: center;
+            background-color: #f5f5f5;
+            font-family: Poppins, sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            text-align: left;
+        }
+        
+        td {
+            text-align: left;
+            border-bottom: 1px solid #eeeeee;
+        }
+        
+        h1 {
+            position: absolute;
+            top: -21px;
+            font-family: "Poppins", sans-serif;
+            font-size: 44.5px;
+            font-weight: 500;
+        }
+        
+        #colorDescription {
+            position: absolute;
+            top: 350px;
+            position: absolute;
+            top: 351px;
+            color: grey;
+            font-family: "Poppins", sans-serif;
+            font-size: 11.5px;
+            font-weight: 200;
+            opacity: 0.75;
+            transition: 0.32s;
+            cursor: pointer; /* Dodaj kursor wskazujący na zawartość do skopiowania */
+        }
+
+        /* Zmiana tekstu na hover */
+        #colorDescription:hover {
+            content: "Skopiuj zawartość";
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.25s;
+            font-size: 12px;
+            opacity: 1;
+        }
+        .wrapper-full {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            height: 100%;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .color-button-selected {
+    border: 2px solid black;
+}
+
+        
+        @media (max-width: 1100px) {
+    /* Tutaj umieść style CSS dla urządzeń mobilnych */
+    body {
+            transform: scale(0.6); /* Skalowanie o 90% oryginalnego rozmiaru */
+            transition: 0.5s;
+            
+        }
+    
+    .magnified-content {
+        visibility: hidden;
+        }
+
+        .magnifier {
+            visibility: hidden;
+                }        }
+        @media (max-width: 800px) {
+    body {
+            transform: scale(0.45); /* Skalowanie o 90% oryginalnego rozmiaru */
+            transition: 0.5s;
+        }
+}
+
+
+@media (max-width: 500px) {
+    /* Tutaj umieść style CSS dla urządzeń mobilnych */
+    body {
+            transform: scale(0.35); /* Skalowanie o 90% oryginalnego rozmiaru */
+            transition: 0.5s;
+        }
+}
+
+
+    </style>
+    
+</head>
+<body>
+    <h1>Personalizacja wersji kolorystycznej</h1>
+    <div class="wrapper-full"><div class="wrapper">
+        <svg width="0" height="0"> 
+            <defs>
+                <filter id="multiplyFilter">
+                    <feBlend mode="multiply"/>
+                </filter>
+                <mask id="mask1">
+                    <image href="nuc4_w1.webp" x="0" y="0" width="957px" height="309px"/>
+                </mask>
+                <mask id="mask2">
+                    <image href="nuc4_w2.webp" x="0" y="0" width="957px" height="309px"/>
+                </mask>
+                <mask id="mask3">
+                    <image href="nuc4_w3.webp" x="0" y="0" width="957px" height="309px"/>
+                </mask>
+                <mask id="mask4">
+                    <image href="nuc4_w4.webp" x="0" y="0" width="957px" height="309px"/>
+                </mask>
+            </defs>
+        </svg>
+
+        <div id="container">
+            <img id="layer" class="layer" src="nuc4_w.webp" alt="wzór">
+            <img id="pattern1" class="pattern-layer" src="nuc4_w1.webp" alt="wzór 1">
+            <img id="pattern2" class="pattern-layer" src="nuc4_w2.webp" alt="wzór 2">
+            <img id="pattern3" class="pattern-layer" src="nuc4_w3.webp" alt="wzór 3">
+            <img id="pattern4" class="pattern-layer" src="nuc4_w4.webp" alt="wzór 4">
+            <div id="colorLayer1" class="color-layer" style="mask: url(#mask1); -webkit-mask: url(#mask1);"></div>
+            <div id="colorLayer2" class="color-layer" style="mask: url(#mask2); -webkit-mask: url(#mask2);"></div>
+            <div id="colorLayer3" class="color-layer" style="mask: url(#mask3); -webkit-mask: url(#mask3);"></div>
+            <div id="colorLayer4" class="color-layer" style="mask: url(#mask4); -webkit-mask: url(#mask4);"></div>
+        </div>
+
+        <!-- Element lupy -->
+        <div class="magnifier" id="magnifier">
+            <div class="magnified-content" id="magnifiedContent">
+                <img id="magnifiedLayer" class="layer" src="nuc4_w.webp" alt="wzór">
+                <img id="magnifiedPattern1" class="pattern-layer" src="nuc4_w1.webp" alt="wzór 1">
+                <img id="magnifiedPattern2" class="pattern-layer" src="nuc4_w2.webp" alt="wzór 2">
+                <img id="magnifiedPattern3" class="pattern-layer" src="nuc4_w3.webp" alt="wzór 3">
+                <img id="magnifiedPattern4" class="pattern-layer" src="nuc4_w4.webp" alt="wzór 4">
+                <div id="magnifiedColorLayer1" class="color-layer" style="mask: url(#mask1); -webkit-mask: url(#mask1);"></div>
+                <div id="magnifiedColorLayer2" class="color-layer" style="mask: url(#mask2); -webkit-mask: url(#mask2);"></div>
+                <div id="magnifiedColorLayer3" class="color-layer" style="mask: url(#mask3); -webkit-mask: url(#mask3);"></div>
+                <div id="magnifiedColorLayer4" class="color-layer" style="mask: url(#mask4); -webkit-mask: url(#mask4);"></div>
+            </div>
+        </div>
+        <p id="colorDescription" onclick="copyTextToClipboard(this.textContent)">Kliknij tutaj, aby skopiować opis kolorów</p>
+    </div>
+    <div class="wrapper2">
+        <table>
+            <tr>
+                <th>Strefa</th>
+                <th>Wybór unikalnego koloru</th>
+            </tr>
+            <tr>
+                <td><div class="bText">1</div></td>
+                <td>
+                    <div id="colorButtons1"></div>
+                </td>
+            </tr>
+            <tr>
+                <td><div class="bText">2</div></td>
+                <td>
+                    <div id="colorButtons2"></div>
+                </td>
+            </tr>
+            <tr>
+                <td><div class="bText">3</div></td>
+                <td>
+                    <div id="colorButtons3"></div>
+                </td>
+            </tr>
+            <tr>
+                <td><div class="bText">4</div></td>
+                <td>
+                    <div id="colorButtons4"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        // Obiekt do przechowywania oryginalnych kolorów
+        var originalColors = {
+            colorLayer1: '',
+            colorLayer2: '',
+            colorLayer3: '',
+            colorLayer4: ''
+
+        };
+
+        // Obiekty z kolorami dla każdej warstwy
+        var colorsLayer1 = {
+            white: 'rgb(255,255,255)',
+            grey: 'rgb(178,178,178)',
+            black: 'rgb(37, 38, 38)', // przykładowy losowy kolor
+            darkred: 'rgb(128,0,59)', // przykładowy losowy kolor
+            orange: 'rgb(255,128,0)',
+            yellow: 'rgb(255,255,0)',
+            royalblue: 'rgb(0,128,255)', // przykładowy losowy kolor
+            lime: 'rgb(192,255,0)',
+            deepblue: 'rgb(0,0,255)',
+            green: 'rgb(0,192,75)',
+            sangria: 'rgb(211,46,117)',
+        };
+
+        var colorsLayer2 = {
+            white: 'rgb(255,255,255)',
+            grey: 'rgb(178,178,178)',
+            black: 'rgb(37, 38, 38)', // przykładowy losowy kolor
+            darkred: 'rgb(128,0,59)', // przykładowy losowy kolor
+            orange: 'rgb(255,128,0)',
+            yellow: 'rgb(255,255,0)',
+            royalblue: 'rgb(0,128,255)', // przykładowy losowy kolor
+            lime: 'rgb(192,255,0)',
+            deepblue: 'rgb(0,0,255)',
+            green: 'rgb(0,192,75)',
+            sangria: 'rgb(211,46,117)',
+        };
+        var colorsLayer3 = {
+            white: 'rgb(255,255,255)',
+            grey: 'rgb(178,178,178)',
+            black: 'rgb(37, 38, 38)', // przykładowy losowy kolor
+            darkred: 'rgb(128,0,59)', // przykładowy losowy kolor
+            orange: 'rgb(255,128,0)',
+            yellow: 'rgb(255,255,0)',
+            royalblue: 'rgb(0,128,255)', // przykładowy losowy kolor
+            lime: 'rgb(192,255,0)',
+            deepblue: 'rgb(0,0,255)',
+            green: 'rgb(0,192,75)',
+            sangria: 'rgb(211,46,117)',
+        };
+
+        var colorsLayer4 = {
+            white: 'rgb(255,255,255)',
+            grey: 'rgb(178,178,178)',
+            black: 'rgb(37, 38, 38)', // przykładowy losowy kolor
+            darkred: 'rgb(128,0,59)', // przykładowy losowy kolor
+            orange: 'rgb(255,128,0)',
+            yellow: 'rgb(255,255,0)',
+            royalblue: 'rgb(0,128,255)', // przykładowy losowy kolor
+            lime: 'rgb(192,255,0)',
+            deepblue: 'rgb(0,0,255)',
+            green: 'rgb(0,192,75)',
+            sangria: 'rgb(211,46,117)',
+        };
+
+
+        // Funkcja do zmiany koloru warstwy
+        function changeColor(layerId, color) {
+    var layer = document.getElementById(layerId);
+    var magnifiedLayer = document.getElementById('magnified' + layerId.charAt(0).toUpperCase() + layerId.slice(1));
+    layer.style.backgroundColor = color;
+    magnifiedLayer.style.backgroundColor = color;
+    originalColors[layerId] = color; // Zapisz nowy kolor jako oryginalny
+
+    // Usuń klasę 'selected' z innych przycisków
+    var buttons = document.querySelectorAll('.color-button');
+    buttons.forEach(button => {
+        button.classList.remove('selected');
+    });
+
+    // Dodaj klasę 'selected' do wybranego przycisku
+    var selectedButton = document.querySelector(`.color-button[style="background-color: ${color};"]`);
+    if (selectedButton) {
+        selectedButton.classList.add('selected');
+    }
+
+    // Zaktualizuj tekst w <p>
+    updateColorText();
+}
+
+
+        // Funkcja resetowania koloru
+        function resetColor(layerId) {
+            var layer = document.getElementById(layerId);
+            var magnifiedLayer = document.getElementById('magnified' + layerId.charAt(0).toUpperCase() + layerId.slice(1));
+            layer.style.backgroundColor = originalColors[layerId]; // Przywróć oryginalny kolor
+            magnifiedLayer.style.backgroundColor = originalColors[layerId]; // Przywróć oryginalny kolor dla powiększonego widoku
+
+            // Zaktualizuj tekst w <p>
+            updateColorText();
+        }
+
+        // Funkcja aktualizująca tekst w <p>
+        function updateColorText() {
+            var colorText = '';
+
+            // Iterujemy po warstwach kolorów
+            for (var layerId in originalColors) {
+                if (originalColors.hasOwnProperty(layerId)) {
+                    var color = originalColors[layerId];
+                    if (color) {
+                        colorText += color + ' | ';
+                    }
+                }
+            }
+
+            // Usuń ostatni separator ' | ' z tekstu
+            colorText = colorText.slice(0, -2); // Usunięcie ostatniego ' | '
+
+            // Zaktualizuj tekst w elemencie <p>
+            var pElement = document.getElementById('colorDescription');
+            if (pElement) {
+                pElement.textContent = colorText;
+            }
+        }
+
+        // Tworzenie przycisków kolorów dla każdej warstwy
+        createColorButtons('colorButtons1', 'colorLayer1', colorsLayer1);
+        createColorButtons('colorButtons2', 'colorLayer2', colorsLayer2);
+        createColorButtons('colorButtons3', 'colorLayer3', colorsLayer3);
+        createColorButtons('colorButtons4', 'colorLayer4', colorsLayer4);
+
+        // Funkcja tworzenia przycisków kolorów dla danej warstwy
+        function createColorButtons(containerId, layerId, colors) {
+    var container = document.getElementById(containerId);
+    for (var colorName in colors) {
+        var colorValue = colors[colorName];
+        var button = document.createElement('div');
+        button.className = 'color-button';
+        button.style.backgroundColor = colorValue;
+        button.setAttribute('onclick', `changeColor('${layerId}', '${colorValue}')`);
+        button.setAttribute('onmouseover', `previewColor('${layerId}', '${colorValue}')`);
+        button.setAttribute('onmouseout', `resetColor('${layerId}')`);
+        container.appendChild(button);
+    }
+}
+
+
+        // Funkcja podglądu koloru
+        function previewColor(layerId, color) {
+            var layer = document.getElementById(layerId);
+            var magnifiedLayer = document.getElementById('magnified' + layerId.charAt(0).toUpperCase() + layerId.slice(1));
+            var originalColor = originalColors[layerId]; // Pobierz zapisany oryginalny kolor
+            if (!originalColor) {
+                originalColors[layerId] = layer.style.backgroundColor; // Zapisz aktualny kolor tylko, jeśli nie ma oryginalnego koloru
+            }
+            layer.style.backgroundColor = color; // Ustaw nowy kolor
+            magnifiedLayer.style.backgroundColor = color; // Ustaw nowy kolor dla powiększonego widoku
+        }
+
+        // Funkcja aktualizująca pozycję lupy
+        function updateMagnifier(event) {
+            var container = document.getElementById('container');
+            var magnifier = document.getElementById('magnifier');
+            var magnifiedContent = document.getElementById('magnifiedContent');
+            var rect = container.getBoundingClientRect();
+            var x = event.clientX - rect.left;
+            var y = event.clientY - rect.top;
+
+            if (x > 0 && y > 0 && x < rect.width && y < rect.height) {
+                magnifier.style.display = 'block';
+                magnifier.style.left = event.pageX - magnifier.offsetWidth / 2 + 'px';
+                magnifier.style.top = event.pageY - magnifier.offsetHeight * 0.45 + 'px';
+                magnifiedContent.style.transform = `scale(1.2) translate(${-x}px, ${-y}px)`;
+            } else {
+                magnifier.style.display = 'none';
+            }
+        }
+
+        // Dodanie nasłuchiwania ruchu myszki na kontenerze
+        document.getElementById('container').addEventListener('mousemove', updateMagnifier);
+
+        // Ukrycie lupy gdy kursor opuszcza kontener
+        document.getElementById('container').addEventListener('mouseleave', function() {
+            var magnifier = document.getElementById('magnifier');
+            magnifier.style.display = 'none';
+        });
+
+        // Funkcja do kopiowania tekstu do schowka
+        function copyTextToClipboard(text) {
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                })
+                .catch(err => {
+                    console.error('Błąd podczas kopiowania do schowka: ', err);
+                });
+        }
+    </script>
+</body>
+</html>
