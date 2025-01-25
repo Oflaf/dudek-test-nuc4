@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <title>Skrzydła 3D</title>
     <style>
         /* Ogólne ustawienia strony */
@@ -72,15 +73,35 @@
         .color-button:hover {
             transform: scale(1.49); /* Zwiększenie przycisku */
         }
+        table {
+            width: 500px; /* Rozciąga tabelę na całą szerokość kontenera */
+
+}
 
         /* Kontener przycisków */
         .color-buttons-container {
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
+    display: flex; /* Używamy flexboxa, aby elementy były obok siebie */
+    justify-content: flex-start; /* Ustawia je obok siebie */
+    align-items: flex-start; /* Wyrównanie do góry */
+    text-align: right;
+    gap: 20px; /* Odstęp między tabelką a czerwonym divem */
+}
+
+/* Zmniejszamy szerokość czerwonego diva, aby pasował obok tabelki */
+.red-box {
+    padding: 20px; /* Odstęp wewnętrzny */
+    width: 500px; /* Zwiększamy szerokość, by był bardziej czytelny */
+    margin-top: 0; /* Usuń margines górny */
+    background-color: ;
+}
+
+/* Dodatkowe style dla paragrafów w czerwonym divie */
+.red-box p {
+    color: rgb(255, 255, 255); /* Kolor tekstu na biały */
+    margin: 10px 0; /* Margines góra-dół między paragrafami */
+    font-size: 1.2em; /* Rozmiar czcionki */
+    
+}
 
         /* Stylowanie dla przycisków w kolumnach */
         .color-buttons-column {
@@ -122,6 +143,61 @@
             font-weight: 100;
         }
 
+        .order-ad-button {
+    background-color: #e31e24; /* Białe tło przycisku */
+    
+    color: rgb(0, 0, 0); /* Czerwony tekst */
+    font-size: 1rem;
+    padding: 10px 20px; /* Wewnętrzne odstępy */
+    border: none;
+    border-radius: 22px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Animacja przycisku */
+    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 140px; /* Szerokość przycisku */
+    height: 50px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    font-family: "Poppins", sans-serif;
+    transition: 0.3s; /* Animacja dla strzałki */
+}
+
+.order-ad-button span {
+    margin-right: 20px; /* Odstęp między tekstem a obrazkiem */
+    
+}
+
+.order-ad-button .arrow-img {
+    width: 10px; /* Ustawienia wielkości strzałki */
+    height: auto;
+    transition: transform 0.2s; /* Animacja dla strzałki */
+
+}
+
+/* Efekt hover na przycisku */
+.order-ad-button:hover {
+    transform: scale(1.07);
+    
+    transition: 0.3s; /* Animacja dla strzałki */
+}
+
+/* Efekt na obrazek po najechaniu na przycisk */
+.order-ad-button:hover .arrow-img {
+    animation: move-arrow 0.24s infinite alternate; /* Szybka animacja poruszania się strzałki */
+}
+
+/* Kluczowa animacja dla strzałki */
+@keyframes move-arrow {
+    0% {
+        transform: translateX(-5px); /* Początkowa pozycja */
+    }
+    100% {
+        transform: translateX(5px); /* Końcowa pozycja, szybkość ruchu */
+    }
+}
     </style>
 </head>
 <body>
@@ -150,8 +226,8 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Strefa</th>
-                            <th>Wybór Koloru</th>
+                            <th style="text-align: right;">Strefa</th>
+                            <th style="text-align: center;">Wybór Koloru</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -160,7 +236,7 @@
                                 <div class="section-title">1</div>
                             </td>
                             <td>
-                                <div id="colorButtons1"></div>
+                                <div id="colorButtons1"  style="text-align: center;"></div>
                             </td>
                         </tr>
                         <tr>
@@ -168,7 +244,7 @@
                                 <div class="section-title">2</div>
                             </td>
                             <td>
-                                <div id="colorButtons2"></div>
+                                <div id="colorButtons2"  style="text-align: center;"></div>
                             </td>
                         </tr>
                         <tr>
@@ -176,7 +252,7 @@
                                 <div class="section-title">3</div>
                             </td>
                             <td>
-                                <div id="colorButtons3"></div>
+                                <div id="colorButtons3"  style="text-align: center;"></div>
                             </td>
                         </tr>
                         <tr>
@@ -184,7 +260,7 @@
                                 <div class="section-title">4</div>
                             </td>
                             <td>
-                                <div id="colorButtons4"></div>
+                                <div id="colorButtons4"  style="text-align: center;"></div>
                             </td>
                         </tr>
                         <tr>
@@ -192,7 +268,7 @@
                                 <div class="section-title">5</div>
                             </td>
                             <td>
-                                <div id="colorButtons5"></div>
+                                <div id="colorButtons5"  style="text-align: center;"></div>
                             </td>
                         </tr>
                         <tr>
@@ -200,13 +276,21 @@
                                 <div class="section-title">6</div>
                             </td>
                             <td>
-                                <div id="colorButtons6"></div>
+                                <div id="colorButtons6"  style="text-align: center;"></div>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            
+            <div class="red-box">
+                <p style='color: rgb(0, 0, 0); margin: 10px; text-align: left; font-size: 1.325rem; font-family: "Poppins", sans-serif;'>Reklama/Logo</p>
+                <p style='color: rgb(0, 0, 0); margin: 10px; text-align: left; font-size: 1.125rem; font-family: "Poppins", sans-serif; font-weight: 300;'>Oferujemy możliwość nadrukowania logo lub reklamy na powierzchnię skrzydła. To doskonała okazja, by wyróżnić swoją markę i dotrzeć do nowych klientów, korzystając z efektywnej formy promocji.</p>
+                <!-- Przycisk "Zamawiam reklamę" -->
+                <button class="order-ad-button">
+                    <span><p>Czytaj</p></span>
+                    <img src="https://dudek.eu/wp-content/themes/idvetmp-child/images/arrow-white-play.svg" class="arrow-img" alt="Arrow">
+                </button>
+            </div>
         </div>
     </div>
 
