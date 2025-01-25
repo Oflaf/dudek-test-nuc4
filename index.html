@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <title>Skrzydła 3D</title>
     <style>
         /* Ogólne ustawienia strony */
         body {
@@ -92,7 +91,6 @@
     padding: 20px; /* Odstęp wewnętrzny */
     width: 500px; /* Zwiększamy szerokość, by był bardziej czytelny */
     margin-top: 0; /* Usuń margines górny */
-    background-color: ;
 }
 
 /* Dodatkowe style dla paragrafów w czerwonym divie */
@@ -291,7 +289,7 @@
                     <img src="https://dudek.eu/wp-content/themes/idvetmp-child/images/arrow-white-play.svg" class="arrow-img" alt="Arrow">
                 </button>
             </div>
-        </div>
+        </div><p id="rgbOutput" style='text-align: center; color: rgb(83, 83, 83); font-size: 0.825rem; font-family: "Poppins", sans-serif;'></p>
     </div>
 
     <svg width="0" height="0">
@@ -373,23 +371,76 @@
             })
             .catch(error => console.error('Błąd ładowania pliku:', error));
     
-        // Funkcja zmieniająca kolor
-        function changeColor(layerId, color) {
-            var layer = document.getElementById(layerId);
-            layer.style.backgroundColor = color;
-            originalColors[layerId] = color;
-    
-            // Deaktywacja wszystkich przycisków w tej strefie
-            var containerId = `colorButtons${layerId.replace('colorLayer', '')}`;
-            var buttons = document.querySelectorAll(`#${containerId} .color-button`);
-            buttons.forEach(button => button.classList.remove('active'));
-    
-            // Aktywacja klikniętego przycisku
-            var clickedButton = document.querySelector(`#${containerId} .color-button[onclick*='${color}']`);
-            if (clickedButton) {
-                clickedButton.classList.add('active');
-            }
+
+
+// Funkcja zmieniająca kolor
+function changeColor(layerId, color) {
+    var layer = document.getElementById(layerId);
+    layer.style.backgroundColor = color;
+    originalColors[layerId] = color;
+
+    // Deaktywacja wszystkich przycisków w tej strefie
+    var containerId = `colorButtons${layerId.replace('colorLayer', '')}`;
+    var buttons = document.querySelectorAll(`#${containerId} .color-button`);
+    buttons.forEach(button => button.classList.remove('active'));
+
+    // Aktywacja klikniętego przycisku
+    var clickedButton = document.querySelector(`#${containerId} .color-button[onclick*='${color}']`);
+    if (clickedButton) {
+        clickedButton.classList.add('active');
+    }
+
+    // Aktualizacja RGB w #rgbOutput
+    updateRgbOutput();
+}
+
+// Funkcja aktualizująca #rgbOutput
+function updateRgbOutput() {
+    var rgbText = "";
+    Object.keys(originalColors).forEach(layerId => {
+        if (originalColors[layerId] !== null) {
+            rgbText += originalColors[layerId] + ", "; // Dodaj kolor do tekstu
         }
+    });
+
+    // Usunięcie ostatniego przecinka
+    if (rgbText.endsWith(", ")) {
+        rgbText = rgbText.slice(0, -2);
+    }
+
+    document.getElementById('rgbOutput').textContent = rgbText; // Zaktualizowanie wyświetlania RGB
+}
+
+
+// Funkcja tworząca przyciski kolorów dla danej strefy
+function createColorButtons(containerId, layerId, colors) {
+    var container = document.getElementById(containerId);
+    container.innerHTML = ''; // Wyczyść kontener przed dodaniem nowych przycisków
+
+    var firstColor = null; // Zmienna przechowująca pierwszy kolor
+
+    for (var colorName in colors) {
+        var colorValue = colors[colorName];
+        var button = document.createElement('div');
+        button.className = 'color-button';
+        button.style.backgroundColor = colorValue;
+        button.setAttribute('onclick', `changeColor('${layerId}', '${colorValue}')`);
+        button.setAttribute('onmouseover', `previewColor('${layerId}', '${colorValue}')`);
+        button.setAttribute('onmouseout', `resetColor('${layerId}')`);
+
+        // Przechowaj pierwszy kolor i zaznacz go
+        if (firstColor === null) {
+            firstColor = colorValue;
+        }
+
+        container.appendChild(button);
+    }
+
+    // Po załadowaniu przycisków, aktywuj pierwszy przycisk
+    if (firstColor !== null) {
+        changeColor(layerId, firstColor); // Zmień kolor na pierwszy i zaznacz go
+    }
+}
     
         // Funkcja podglądu koloru na hover
         function previewColor(layerId, color) {
@@ -407,22 +458,7 @@
             layer.style.backgroundColor = originalColors[layerId];
         }
     
-        // Funkcja tworząca przyciski kolorów dla danej strefy
-        function createColorButtons(containerId, layerId, colors) {
-            var container = document.getElementById(containerId);
-            container.innerHTML = ''; // Wyczyść kontener przed dodaniem nowych przycisków
-    
-            for (var colorName in colors) {
-                var colorValue = colors[colorName];
-                var button = document.createElement('div');
-                button.className = 'color-button';
-                button.style.backgroundColor = colorValue;
-                button.setAttribute('onclick', `changeColor('${layerId}', '${colorValue}')`);
-                button.setAttribute('onmouseover', `previewColor('${layerId}', '${colorValue}')`);
-                button.setAttribute('onmouseout', `resetColor('${layerId}')`);
-                container.appendChild(button);
-            }
-        }
+
     </script>
 </body>
 </html>
