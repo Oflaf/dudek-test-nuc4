@@ -337,7 +337,7 @@
             .then(response => response.text())
             .then(data => {
                 // Wyodrębnienie danych z sekcji Orca6
-                var orca6Data = data.split('Orca6')[1];
+                var orca6Data = data.split('Orca6')[1].split('Cabrio')[0].trim();
     
                 // Podzielenie danych na linie
                 var lines = orca6Data.split('\n');
