@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Skrzydła 3D</title>
+    <style>
+        /* Ogólne ustawienia strony */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Kontener główny z obrazkami */
+        #container {
+            position: relative;
+            width: 1058px; /* dostosuj według potrzeb */
+            height: 411px; /* dostosuj według potrzeb */
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        /* Ustawienie warstw */
+        .layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: 0.5s; /* Animacja zmiany przezroczystości */
+        }
+
+        /* Warstwy kolorowe */
+        .color-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 1;
+            mix-blend-mode: multiply;
+            transition: 0.5s;
+        }
+
+        /* Ustawienie warstw wzoru */
+        .pattern-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* Przycisk koloru */
+        .color-button {
+            width: 15px; /* Zmniejszenie przycisków */
+            height: 15px; /* Zmniejszenie przycisków */
+            border-radius: 50%;
+            display: inline-block;
+            margin: 5px;
+            cursor: pointer;
+            border: 1px dotted black; /* Kropkowana obramówka */
+            transition: 0.3s, 0.5s;
+        }
+
+        /* Powiększenie przycisków na hover */
+        .color-button:hover {
+            transform: scale(1.49); /* Zwiększenie przycisku */
+        }
+        table {
+            width: 500px; /* Rozciąga tabelę na całą szerokość kontenera */
+            
+
+}
+
+        /* Kontener przycisków */
+        .color-buttons-container {
+    display: flex; /* Używamy flexboxa, aby elementy były obok siebie */
+    justify-content: flex-start; /* Ustawia je obok siebie */
+    align-items: flex-start; /* Wyrównanie do góry */
+    text-align: right;
+    gap: 20px; /* Odstęp między tabelką a czerwonym divem */
+}
+
+/* Zmniejszamy szerokość czerwonego diva, aby pasował obok tabelki */
+.red-box {
+    padding: 20px; /* Odstęp wewnętrzny */
+    width: 500px; /* Zwiększamy szerokość, by był bardziej czytelny */
+    margin-top: 0; /* Usuń margines górny */
+}
+
+/* Dodatkowe style dla paragrafów w czerwonym divie */
+.red-box p {
+    color: rgb(255, 255, 255); /* Kolor tekstu na biały */
+    margin: 10px 0; /* Margines góra-dół między paragrafami */
+    font-size: 1.2em; /* Rozmiar czcionki */
+    
+}
+
+        /* Stylowanie dla przycisków w kolumnach */
+        .color-buttons-column {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Nagłówki sekcji przycisków */
+        .section-title {
+            font-size: 1em;
+            color: #333;
+        }
+        /* Aktywny przycisk - solidne obramowanie */
+        .color-button.active {
+            border: 1px solid black; /* Solidne obramowanie */
+            transform: scale(1.32); /* Zwiększenie przycisku */
+            transition: 0.2s;
+
+
+        }
+
+        /* Nagłówek dla wyboru koloru */
+        .color-selection-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Nagłówek dla wyboru strefy */
+        .zone-selection-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        th {
+            font-weight: 100;
+        }
+
+        .order-ad-button {
+            text-decoration: none; /* Usuwa podkreślenie */
+            display: inline-block; /* Zapewnia odpowiedni wygląd jak przycisk */
+    background-color: #e31e24; /* Białe tło przycisku */
+    color: rgb(0, 0, 0); /* Czerwony tekst */
+    font-size: 1rem;
+    padding: 10px 20px; /* Wewnętrzne odstępy */
+    border: none;
+    border-radius: 22px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Animacja przycisku */
+    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 140px; /* Szerokość przycisku */
+    height: 50px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    font-family: "Poppins", sans-serif;
+    transition: 0.3s; /* Animacja dla strzałki */
+}
+
+.order-ad-button span {
+    margin-right: 20px; /* Odstęp między tekstem a obrazkiem */
+    
+}
+
+.order-ad-button .arrow-img {
+    width: 10px; /* Ustawienia wielkości strzałki */
+    height: auto;
+    transition: transform 0.2s; /* Animacja dla strzałki */
+
+}
+
+/* Efekt hover na przycisku */
+.order-ad-button:hover {
+    transform: scale(1.07);
+    
+    transition: 0.3s; /* Animacja dla strzałki */
+}
+
+/* Efekt na obrazek po najechaniu na przycisk */
+.order-ad-button:hover .arrow-img {
+    animation: move-arrow 0.24s infinite alternate; /* Szybka animacja poruszania się strzałki */
+}
+
+/* Kluczowa animacja dla strzałki */
+@keyframes move-arrow {
+    0% {
+        transform: translateX(-5px); /* Początkowa pozycja */
+    }
+    100% {
+        transform: translateX(5px); /* Końcowa pozycja, szybkość ruchu */
+    }
+}
+
+.download-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 22px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-family: "Poppins", sans-serif;
+    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.3s ease;
+}
+
+.download-button:hover {
+    transform: scale(1.07);
+    background-color: #45a049;
+}
+
+.download-icon {
+    margin-left: 10px;
+    width: 16px;
+    height: 16px;
+}
+
+.button-like-link {
+    position: absolute;
+    all: unset; /* Usuwamy wszystkie domyślne style przeglądarki dla buttona */
+    color: #0066cc;
+    font-size: 16px;
+    text-decoration: underline;
+    display: inline-flex; /* Zapewnia zachowanie jak link */
+    align-items: center;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-right: 300px;
+    text-align: center;
+    padding: 0; /* Usuwamy domyślne marginesy/padding */
+}
+
+.button-like-link .download-icon {
+    margin-left: 8px;
+    width: 16px;
+    height: 16px;
+    fill: currentColor; /* Zgodność z kolorem tekstu */
+}
+
+.button-like-link:hover {
+    color: #005bb5; /* Kolor po najechaniu */
+}
+
+    </style>
+</head>
+<body>
+
+    <div>
+        <div id="container">
+            <img id="layer" class="layer" src="orca6_w.webp" alt="wzór">
+            <img id="pattern1" class="pattern-layer" src="orca6_w1.webp" alt="wzór 1">
+            <img id="pattern2" class="pattern-layer" src="orca6_w2.webp" alt="wzór 2">
+            <img id="pattern3" class="pattern-layer" src="orca6_w3.webp" alt="wzór 3">
+            <img id="pattern4" class="pattern-layer" src="orca6_w4.webp" alt="wzór 4">
+            <img id="pattern3" class="pattern-layer" src="orca6_w5.webp" alt="wzór 5">
+            <img id="pattern4" class="pattern-layer" src="orca6_w6.webp" alt="wzór 6">
+
+            <div id="colorLayer1" class="color-layer" style="mask: url(#mask1); -webkit-mask: url(#mask1);"></div>
+            <div id="colorLayer2" class="color-layer" style="mask: url(#mask2); -webkit-mask: url(#mask2);"></div>
+            <div id="colorLayer3" class="color-layer" style="mask: url(#mask3); -webkit-mask: url(#mask3);"></div>
+            <div id="colorLayer4" class="color-layer" style="mask: url(#mask4); -webkit-mask: url(#mask4);"></div>
+            <div id="colorLayer5" class="color-layer" style="mask: url(#mask5); -webkit-mask: url(#mask5);"></div>
+            <div id="colorLayer6" class="color-layer" style="mask: url(#mask6); -webkit-mask: url(#mask6);"></div>
+        </div>
+
+        <!-- Kontener przycisków do zmiany kolorów -->
+        <div class="color-buttons-container">
+            <div class="color-buttons-column">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: right;">Strefa</th>
+                            <th style="text-align: center;">Wybór Koloru</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="section-title">Top 1</div>
+                            </td>
+                            <td>
+                                <div id="colorButtons1" style="text-align: left; margin-left: 15px;"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="section-title">Top 2</div>
+                            </td>
+                            <td>
+                                <div id="colorButtons2"  style="text-align: left; margin-left: 15px;"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="section-title">Top 3</div>
+                            </td>
+                            <td>
+                                <div id="colorButtons3" style="text-align: left; margin-left: 15px;"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="section-title">Top 4</div>
+                            </td>
+                            <td>
+                                <div id="colorButtons4"  style="text-align: left; margin-left: 15px;"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="section-title">Bottom 1</div>
+                            </td>
+                            <td>
+                                <div id="colorButtons5"  style="text-align: left; margin-left: 15px;"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="section-title">Bottom 2</div>
+                            </td>
+                            <td>
+                                <div id="colorButtons6" style="text-align: left; margin-left: 15px;"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    
+                </table>
+                <button id="downloadTxtBtn" class="button-like-link"> Pobierz 
+                    <svg class="download-icon" viewBox="0 0 24 24" fill="white">
+                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                    </svg>
+                </button>
+                
+            </div>   
+            
+            
+            <div class="red-box">
+                <p style='color: rgb(0, 0, 0); margin: 10px; text-align: left; font-size: 1.325rem; font-family: "Poppins", sans-serif;'>Reklama/Logo</p>
+                <p style='color: rgb(0, 0, 0); margin: 10px; text-align: left; font-size: 1.125rem; font-family: "Poppins", sans-serif; font-weight: 300;'>Oferujemy możliwość nadrukowania logo lub reklamy na powierzchnię skrzydła. To doskonała okazja, by wyróżnić swoją markę i dotrzeć do nowych klientów, korzystając z efektywnej formy promocji.</p>
+                <!-- Przycisk "Zamawiam reklamę" -->
+                <a href="https://dudek.eu/reklamy-na-skrzydlach/" class="order-ad-button" target="_blank">
+                    <span><p>Czytaj</p></span>
+                    <img src="https://dudek.eu/wp-content/themes/idvetmp-child/images/arrow-white-play.svg" class="arrow-img" alt="Arrow">
+                </a>
+
+        </div>
+        </div>
+        
+        <p id="rgbOutput" style='text-align: center; color: rgb(83, 83, 83); font-size: 0.825rem; font-family: "Poppins", sans-serif;'></p> 
+    </div>
+
+
+    <svg width="0" height="0">
+        <defs>
+            <filter id="multiplyFilter">
+                <feBlend mode="multiply"/>
+            </filter>
+            <mask id="mask1">
+                <image href="orca6_w1.webp" x="0" y="0" width="1058px" height="411px"/>
+            </mask>
+            <mask id="mask2">
+                <image href="orca6_w2.webp" x="0" y="0" width="1058px" height="411px"/>
+            </mask>
+            <mask id="mask3">
+                <image href="orca6_w3.webp" x="0" y="0" width="1058px" height="411px"/>
+            </mask>
+            <mask id="mask4">
+                <image href="orca6_w4.webp" x="0" y="0" width="1058px" height="411px"/>
+            </mask>
+            <mask id="mask5">
+                <image href="orca6_w5.webp" x="0" y="0" width="1058px" height="411px"/>
+            </mask>
+            <mask id="mask6">
+                <image href="orca6_w6.webp" x="0" y="0" width="1058px" height="411px"/>
+            </mask>
+
+        </defs>
+    </svg>
+    <script>
+        var originalColors = {
+            colorLayer1: {},
+            colorLayer2: {},
+            colorLayer3: {},
+            colorLayer4: {},
+            colorLayer5: {},
+            colorLayer6: {}
+        };
+            
+        // Funkcja do pobierania danych z pliku
+        fetch('https://raw.githubusercontent.com/Oflaf/dudek-test-nuc4/refs/heads/main/kolory.txt')
+            .then(response => response.text())
+            .then(data => {
+                // Wyodrębnienie danych z sekcji Orca6
+                var orca6Data = data.split('Orca6')[1].split('Cabrio')[0].trim();
+    
+                // Podzielenie danych na linie
+                var lines = orca6Data.split('\n');
+                var layers = {};
+    
+                // Przetwarzanie danych z każdej linii
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i].trim();
+                    if (line === '') continue; // Pomiń puste linie
+    
+                    var parts = line.split(' '); // Podziel na numer warstwy i kolory
+                    var layer = parts[0]; // Numer warstwy (np. 1, 2, 3, ...)
+                    var colors = parts.slice(1); // Pozostałe elementy to kolory
+    
+                    // Przekształcenie kolorów z formatu (255,255,255) na rgb(255,255,255)
+                    var colorObject = {};
+                    colors.forEach((color, index) => {
+                        color = color.replace(/[();\s]/g, ''); // Usuwanie nawiasów, średników i spacji
+                        color = `rgb(${color})`; // Formatowanie na rgb(x,x,x)
+                        var letter = String.fromCharCode(97 + index); // Generowanie liter (a, b, c, ...)
+                        colorObject[letter] = color;
+                    });
+    
+                    // Przypisanie kolorów do odpowiedniej warstwy
+                    layers[`colorLayer${layer}`] = colorObject;
+                }
+    
+                // Tworzenie przycisków dla każdej warstwy
+                Object.keys(layers).forEach(layerId => {
+                    var layerColors = layers[layerId];
+                    var containerId = `colorButtons${layerId.replace('colorLayer', '')}`;
+                    createColorButtons(containerId, layerId, layerColors);
+                });
+            })
+            .catch(error => console.error('Błąd ładowania pliku:', error));
+    
+function changeColor(layerId, color) {
+    var layer = document.getElementById(layerId);
+    layer.style.backgroundColor = color;
+    originalColors[layerId] = color;
+
+    // Deaktywacja wszystkich przycisków w tej strefie
+    var containerId = `colorButtons${layerId.replace('colorLayer', '')}`;
+    var buttons = document.querySelectorAll(`#${containerId} .color-button`);
+    buttons.forEach(button => button.classList.remove('active'));
+
+    // Aktywacja klikniętego przycisku
+    var clickedButton = document.querySelector(`#${containerId} .color-button[onclick*='${color}']`);
+    if (clickedButton) {
+        clickedButton.classList.add('active');
+    }
+
+    // Aktualizacja RGB w #rgbOutput
+    updateRgbOutput();
+
+    // Sprawdzanie, czy kolory warstw 2 i 3 są takie same
+    checkColorConflict();
+}
+
+// Funkcja sprawdzająca konflikt kolorów
+function checkColorConflict() {
+    var colorLayer2 = originalColors['colorLayer2'];
+    var colorLayer3 = originalColors['colorLayer3'];
+
+    if (colorLayer2 && colorLayer3 && colorLayer2 === colorLayer3) {
+        // Pobierz wszystkie dostępne kolory dla warstwy 3
+        var layer3Buttons = document.querySelectorAll('#colorButtons3 .color-button');
+        var availableColors = [];
+        
+        layer3Buttons.forEach(button => {
+            var color = button.style.backgroundColor;
+            if (color !== colorLayer2) { // Wyklucz kolor powodujący konflikt
+                availableColors.push(color);
+            }
+        });
+
+        // Jeśli są dostępne inne kolory, wybierz losowy
+        if (availableColors.length > 0) {
+            var randomIndex = Math.floor(Math.random() * availableColors.length);
+            var newColor = availableColors[randomIndex];
+            changeColor('colorLayer3', newColor);
+        }
+    }
+}
+
+
+// Funkcja aktualizująca #rgbOutput
+function updateRgbOutput() {
+    var rgbText = "";
+    Object.keys(originalColors).forEach(layerId => {
+        if (originalColors[layerId] !== null) {
+            rgbText += originalColors[layerId] + ", "; // Dodaj kolor do tekstu
+        }
+    });
+
+    // Usunięcie ostatniego przecinka
+    if (rgbText.endsWith(", ")) {
+        rgbText = rgbText.slice(0, -2);
+    }
+
+    document.getElementById('rgbOutput').textContent = rgbText; // Zaktualizowanie wyświetlania RGB
+}
+
+
+// Funkcja tworząca przyciski kolorów dla danej strefy
+function createColorButtons(containerId, layerId, colors) {
+    var container = document.getElementById(containerId);
+    container.innerHTML = ''; // Wyczyść kontener przed dodaniem nowych przycisków
+
+    var firstColor = null; // Zmienna przechowująca pierwszy kolor
+
+    for (var colorName in colors) {
+        var colorValue = colors[colorName];
+        var button = document.createElement('div');
+        button.className = 'color-button';
+        button.style.backgroundColor = colorValue;
+        button.setAttribute('onclick', `changeColor('${layerId}', '${colorValue}')`);
+        button.setAttribute('onmouseover', `previewColor('${layerId}', '${colorValue}')`);
+        button.setAttribute('onmouseout', `resetColor('${layerId}')`);
+
+        // Przechowaj pierwszy kolor i zaznacz go
+        if (firstColor === null) {
+            firstColor = colorValue;
+        }
+
+        container.appendChild(button);
+    }
+
+    // Po załadowaniu przycisków, aktywuj pierwszy przycisk
+    if (firstColor !== null) {
+        changeColor(layerId, firstColor); // Zmień kolor na pierwszy i zaznacz go
+    }
+}
+    
+        // Funkcja podglądu koloru na hover
+        function previewColor(layerId, color) {
+            var layer = document.getElementById(layerId);
+            var originalColor = originalColors[layerId];
+            if (!originalColor) {
+                originalColors[layerId] = layer.style.backgroundColor;
+            }
+            layer.style.backgroundColor = color;
+        }
+    
+        // Funkcja resetowania koloru
+        function resetColor(layerId) {
+            var layer = document.getElementById(layerId);
+            layer.style.backgroundColor = originalColors[layerId];
+        }
+        
+        // Funkcja generująca i pobierająca plik TXT
+        function generateTxtFile() {
+            // Pobierz aktualną datę i czas
+            const now = new Date();
+            const dateTimeString = now.toLocaleString('pl-PL', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            }).replace(/\//g, '-').replace(',', '');
+            
+            // Nazwa skrzydła
+            const wingName = "Orca6";
+            
+            // Przygotuj dane o warstwach i kolorach
+            let layersData = [];
+            
+            // Mapowanie nazw warstw
+            const layerNames = {
+                'colorLayer1': 'Top 1',
+                'colorLayer2': 'Top 2',
+                'colorLayer3': 'Top 3',
+                'colorLayer4': 'Top 4',
+                'colorLayer5': 'Bottom 1',
+                'colorLayer6': 'Bottom 2'
+            };
+            
+            // Zbierz dane o warstwach
+            for (const [layerId, color] of Object.entries(originalColors)) {
+                if (color) {
+                    layersData.push({
+                        name: layerNames[layerId] || layerId,
+                        color: color
+                    });
+                }
+            }
+            
+            // Przygotuj zawartość pliku TXT
+            let fileContent = `Konfiguracja skrzydła ${wingName}\n`;
+            fileContent += `Data i czas generowania: ${dateTimeString}\n\n`;
+            fileContent += `Wybrane kolory dla poszczególnych stref:\n`;
+            
+            // Dodaj informacje o każdej warstwie
+            layersData.forEach(layer => {
+                fileContent += `${layer.name}: ${layer.color}\n`;
+            });
+            
+            // Utwórz obiekt Blob z zawartością pliku
+            const blob = new Blob([fileContent], { type: 'text/plain' });
+            
+            // Utwórz URL do pobrania
+            const url = URL.createObjectURL(blob);
+            
+            // Utwórz element <a> do pobrania pliku
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Konfiguracja_${wingName}_${dateTimeString.replace(/[: ]/g, '-')}.txt`;
+            
+            // Kliknij element, aby rozpocząć pobieranie
+            document.body.appendChild(a);
+            a.click();
+            
+            // Posprzątaj
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Dodaj obsługę kliknięcia przycisku pobierania
+        document.getElementById('downloadTxtBtn').addEventListener('click', generateTxtFile);
+
+    </script>
+</body>
+</html>
