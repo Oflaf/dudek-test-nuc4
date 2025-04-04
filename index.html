@@ -199,6 +199,60 @@
         transform: translateX(5px); /* Końcowa pozycja, szybkość ruchu */
     }
 }
+
+.download-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 22px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-family: "Poppins", sans-serif;
+    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.3s ease;
+}
+
+.download-button:hover {
+    transform: scale(1.07);
+    background-color: #45a049;
+}
+
+.download-icon {
+    margin-left: 10px;
+    width: 16px;
+    height: 16px;
+}
+
+.button-like-link {
+    position: absolute;
+    all: unset; /* Usuwamy wszystkie domyślne style przeglądarki dla buttona */
+    color: #0066cc;
+    font-size: 16px;
+    text-decoration: underline;
+    display: inline-flex; /* Zapewnia zachowanie jak link */
+    align-items: center;
+    cursor: pointer;
+    margin-top: 20px;
+    margin-right: 300px;
+    text-align: center;
+    padding: 0; /* Usuwamy domyślne marginesy/padding */
+}
+
+.button-like-link .download-icon {
+    margin-left: 8px;
+    width: 16px;
+    height: 16px;
+    fill: currentColor; /* Zgodność z kolorem tekstu */
+}
+
+.button-like-link:hover {
+    color: #005bb5; /* Kolor po najechaniu */
+}
+
     </style>
 </head>
 <body>
@@ -281,19 +335,32 @@
                             </td>
                         </tr>
                     </tbody>
+                    
                 </table>
-            </div>
+                <button id="downloadTxtBtn" class="button-like-link"> Pobierz 
+                    <svg class="download-icon" viewBox="0 0 24 24" fill="white">
+                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
+                    </svg>
+                </button>
+                
+            </div>   
+            
+            
             <div class="red-box">
                 <p style='color: rgb(0, 0, 0); margin: 10px; text-align: left; font-size: 1.325rem; font-family: "Poppins", sans-serif;'>Reklama/Logo</p>
                 <p style='color: rgb(0, 0, 0); margin: 10px; text-align: left; font-size: 1.125rem; font-family: "Poppins", sans-serif; font-weight: 300;'>Oferujemy możliwość nadrukowania logo lub reklamy na powierzchnię skrzydła. To doskonała okazja, by wyróżnić swoją markę i dotrzeć do nowych klientów, korzystając z efektywnej formy promocji.</p>
                 <!-- Przycisk "Zamawiam reklamę" -->
-                <a href="https://dudek.eu/reklamy-na-skrzydlach/" class="order-ad-button">
+                <a href="https://dudek.eu/reklamy-na-skrzydlach/" class="order-ad-button" target="_blank">
                     <span><p>Czytaj</p></span>
                     <img src="https://dudek.eu/wp-content/themes/idvetmp-child/images/arrow-white-play.svg" class="arrow-img" alt="Arrow">
                 </a>
-            </div>
-        </div><p id="rgbOutput" style='text-align: center; color: rgb(83, 83, 83); font-size: 0.825rem; font-family: "Poppins", sans-serif;'></p>
+
+        </div>
+        </div>
+        
+        <p id="rgbOutput" style='text-align: center; color: rgb(83, 83, 83); font-size: 0.825rem; font-family: "Poppins", sans-serif;'></p> 
     </div>
+
 
     <svg width="0" height="0">
         <defs>
@@ -321,7 +388,6 @@
 
         </defs>
     </svg>
-
     <script>
         var originalColors = {
             colorLayer1: {},
@@ -331,7 +397,7 @@
             colorLayer5: {},
             colorLayer6: {}
         };
-    
+            
         // Funkcja do pobierania danych z pliku
         fetch('https://raw.githubusercontent.com/Oflaf/dudek-test-nuc4/refs/heads/main/kolory.txt')
             .then(response => response.text())
@@ -374,9 +440,6 @@
             })
             .catch(error => console.error('Błąd ładowania pliku:', error));
     
-
-
-// Funkcja zmieniająca kolor
 function changeColor(layerId, color) {
     var layer = document.getElementById(layerId);
     layer.style.backgroundColor = color;
@@ -395,7 +458,37 @@ function changeColor(layerId, color) {
 
     // Aktualizacja RGB w #rgbOutput
     updateRgbOutput();
+
+    // Sprawdzanie, czy kolory warstw 2 i 3 są takie same
+    checkColorConflict();
 }
+
+// Funkcja sprawdzająca konflikt kolorów
+function checkColorConflict() {
+    var colorLayer2 = originalColors['colorLayer2'];
+    var colorLayer3 = originalColors['colorLayer3'];
+
+    if (colorLayer2 && colorLayer3 && colorLayer2 === colorLayer3) {
+        // Pobierz wszystkie dostępne kolory dla warstwy 3
+        var layer3Buttons = document.querySelectorAll('#colorButtons3 .color-button');
+        var availableColors = [];
+        
+        layer3Buttons.forEach(button => {
+            var color = button.style.backgroundColor;
+            if (color !== colorLayer2) { // Wyklucz kolor powodujący konflikt
+                availableColors.push(color);
+            }
+        });
+
+        // Jeśli są dostępne inne kolory, wybierz losowy
+        if (availableColors.length > 0) {
+            var randomIndex = Math.floor(Math.random() * availableColors.length);
+            var newColor = availableColors[randomIndex];
+            changeColor('colorLayer3', newColor);
+        }
+    }
+}
+
 
 // Funkcja aktualizująca #rgbOutput
 function updateRgbOutput() {
@@ -460,7 +553,78 @@ function createColorButtons(containerId, layerId, colors) {
             var layer = document.getElementById(layerId);
             layer.style.backgroundColor = originalColors[layerId];
         }
-    
+        
+        // Funkcja generująca i pobierająca plik TXT
+        function generateTxtFile() {
+            // Pobierz aktualną datę i czas
+            const now = new Date();
+            const dateTimeString = now.toLocaleString('pl-PL', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            }).replace(/\//g, '-').replace(',', '');
+            
+            // Nazwa skrzydła
+            const wingName = "Orca6";
+            
+            // Przygotuj dane o warstwach i kolorach
+            let layersData = [];
+            
+            // Mapowanie nazw warstw
+            const layerNames = {
+                'colorLayer1': 'Top 1',
+                'colorLayer2': 'Top 2',
+                'colorLayer3': 'Top 3',
+                'colorLayer4': 'Top 4',
+                'colorLayer5': 'Bottom 1',
+                'colorLayer6': 'Bottom 2'
+            };
+            
+            // Zbierz dane o warstwach
+            for (const [layerId, color] of Object.entries(originalColors)) {
+                if (color) {
+                    layersData.push({
+                        name: layerNames[layerId] || layerId,
+                        color: color
+                    });
+                }
+            }
+            
+            // Przygotuj zawartość pliku TXT
+            let fileContent = `Konfiguracja skrzydła ${wingName}\n`;
+            fileContent += `Data i czas generowania: ${dateTimeString}\n\n`;
+            fileContent += `Wybrane kolory dla poszczególnych stref:\n`;
+            
+            // Dodaj informacje o każdej warstwie
+            layersData.forEach(layer => {
+                fileContent += `${layer.name}: ${layer.color}\n`;
+            });
+            
+            // Utwórz obiekt Blob z zawartością pliku
+            const blob = new Blob([fileContent], { type: 'text/plain' });
+            
+            // Utwórz URL do pobrania
+            const url = URL.createObjectURL(blob);
+            
+            // Utwórz element <a> do pobrania pliku
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Konfiguracja_${wingName}_${dateTimeString.replace(/[: ]/g, '-')}.txt`;
+            
+            // Kliknij element, aby rozpocząć pobieranie
+            document.body.appendChild(a);
+            a.click();
+            
+            // Posprzątaj
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // Dodaj obsługę kliknięcia przycisku pobierania
+        document.getElementById('downloadTxtBtn').addEventListener('click', generateTxtFile);
 
     </script>
 </body>
